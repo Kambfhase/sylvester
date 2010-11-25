@@ -116,17 +116,22 @@ Matrix.prototype = {
     var M = matrix.elements || matrix;
     if (typeof(M[0][0]) == 'undefined') { M = Matrix.create(M).elements; }
     if (!this.canMultiplyFromLeft(M)) { return null; }
-    var i = this.elements.length, nj = M[0].length, j;
-    var cols = this.elements[0].length, c, elements = [], sum;
-    while (i--) { j = nj;
-      elements[i] = [];
-      while (j--) { c = cols;
-        sum = 0;
-        while (c--) {
-          sum += this.elements[i][c] * M[c][j];
+    var e= this.elements, rowThis, rowElem, elements=[],
+        sum, m=e.length, n=M[0].length, o=e[0].length, i=m, j, k;
+    
+    while (i--){ 
+        rowElem = [];
+        rowThis = e[i];
+        j = n;
+        while (j--){
+            sum = 0;
+            k=o;
+            while (k--){
+                sum += rowThis[k] * M[k][j];
+            }
+            rowElem[j] = sum;
         }
-        elements[i][j] = sum;
-      }
+        elements[i] = rowElem;
     }
     var M = Matrix.create(elements);
     return returnVector ? M.col(1) : M;
