@@ -152,9 +152,9 @@ Polygon.prototype = {
                 C = this.v(3).elements;
             return Vector.create([(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3, (A[2] + B[2] + C[2]) / 3]);
         } else {
-            var A, M = 0,
+            var M = 0,
                 V = Vector.Zero(3),
-                P, C, trigs = this.trianglesForSurfaceIntegral();
+                P, trigs = this.trianglesForSurfaceIntegral();
             var i = trigs.length;
             while (i--) {
                 A = trigs[i].area() * trigs[i].plane.normal.dot(this.plane.normal);

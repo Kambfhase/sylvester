@@ -183,7 +183,7 @@ Matrix.prototype = {
             }
             elements[i] = rowElem;
         }
-        var M = Matrix.create(elements);
+        M = Matrix.create(elements);
         return returnVector ? M.col(1) : M;
     },
 
@@ -218,8 +218,8 @@ Matrix.prototype = {
         var rows = this.elements.length,
             i, cols = this.elements[0].length,
             j;
-        var elements = [],
-            i = cols;
+        var elements = [];
+        i = cols;
         while (i--) {
             j = rows;
             elements[i] = [];

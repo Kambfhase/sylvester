@@ -25,8 +25,8 @@ Vector.prototype = {
 
     // Returns true iff the vector is equal to the argument
     eql: function (vector) {
-        var n = this.elements.length;
-        var V = vector.elements || vector;
+        var n = this.elements.length,
+            V = vector.elements || vector;
         if (n != V.length) {
             return false;
         }
@@ -54,8 +54,9 @@ Vector.prototype = {
 
     // Calls the iterator for each element of the vector in turn
     each: function (fn) {
-        var n = this.elements.length;
-        for (var i = 0; i < n; i++) {
+        var n = this.elements.length, 
+            i = 0;
+        for ( ; i < n; i++) {
             fn(this.elements[i], i + 1);
         }
     },
@@ -73,16 +74,16 @@ Vector.prototype = {
 
     // Returns the angle between the vector and the argument (also a vector)
     angleFrom: function (vector) {
-        var V = vector.elements || vector;
-        var n = this.elements.length,
+        var V = vector.elements || vector,
+            n = this.elements.length,
             k = n,
-            i;
+            i, theta,
+            dot = 0,
+            mod1 = 0,
+            mod2 = 0;
         if (n != V.length) {
             return null;
         }
-        var dot = 0,
-            mod1 = 0,
-            mod2 = 0;
         // Work things out in parallel to save time
         this.each(function (x, i) {
             dot += x * V[i - 1];
@@ -94,7 +95,7 @@ Vector.prototype = {
         if (mod1 * mod2 === 0) {
             return null;
         }
-        var theta = dot / (mod1 * mod2);
+            theta = dot / (mod1 * mod2);
         if (theta < -1) {
             theta = -1;
         }
@@ -158,8 +159,8 @@ Vector.prototype = {
     // Returns the scalar product of the vector with the argument
     // Both vectors must have equal dimensionality
     dot: function (vector) {
-        var V = vector.elements || vector;
-        var i, product = 0,
+        var V = vector.elements || vector,
+            i, product = 0,
             n = this.elements.length;
         if (n != V.length) {
             return null;
@@ -173,11 +174,11 @@ Vector.prototype = {
     // Returns the vector product of the vector with the argument
     // Both vectors must have dimensionality 3
     cross: function (vector) {
-        var B = vector.elements || vector;
-        if (this.elements.length != 3 || B.length != 3) {
+        var B = vector.elements || vector,
+            A = this.elements;
+        if ( A.length != 3 || B.length != 3) {
             return null;
         }
-        var A = this.elements;
         return Vector.create([(A[1] * B[2]) - (A[2] * B[1]), (A[2] * B[0]) - (A[0] * B[2]), (A[0] * B[1]) - (A[1] * B[0])]);
     },
 
@@ -196,8 +197,9 @@ Vector.prototype = {
     // Returns the index of the first match found
     indexOf: function (x) {
         var index = null,
-            n = this.elements.length;
-        for (var i = 0; i < n; i++) {
+            n = this.elements.length,
+            i = 0;
+        for ( ; i < n; i++) {
             if (index === null && this.elements[i] == x) {
                 index = i + 1;
             }
@@ -230,12 +232,12 @@ Vector.prototype = {
         if (obj.anchor || (obj.start && obj.end)) {
             return obj.distanceFrom(this);
         }
-        var V = obj.elements || obj;
+        var V = obj.elements || obj,
+            sum = 0,
+            part;
         if (V.length != this.elements.length) {
             return null;
         }
-        var sum = 0,
-            part;
         this.each(function (x, i) {
             part = x - V[i - 1];
             sum += part * part;
@@ -257,7 +259,7 @@ Vector.prototype = {
     // point if the vector is 2D, and a line if it is 3D. Be careful with line directions!
     rotate: function (t, obj) {
         var V, R = null,
-            x, y, z;
+            x, y, z, C;
         if (t.determinant) {
             R = t.elements;
         }
@@ -279,7 +281,7 @@ Vector.prototype = {
             if (!obj.direction) {
                 return null;
             }
-            var C = obj.pointClosestTo(this).elements;
+            C = obj.pointClosestTo(this).elements;
             if (!R) {
                 R = Matrix.Rotation(t, obj.direction).elements;
             }
@@ -296,14 +298,15 @@ Vector.prototype = {
 
     // Returns the result of reflecting the point in the given point, line or plane
     reflectionIn: function (obj) {
+        var P,C,Q;
         if (obj.anchor) {
             // obj is a plane or line
-            var P = this.elements.slice();
-            var C = obj.pointClosestTo(P).elements;
+            P = this.elements.slice();
+            C = obj.pointClosestTo(P).elements;
             return Vector.create([C[0] + (C[0] - P[0]), C[1] + (C[1] - P[1]), C[2] + (C[2] - (P[2] || 0))]);
         } else {
             // obj is a point
-            var Q = obj.elements || obj;
+            Q = obj.elements || obj;
             if (this.elements.length != Q.length) {
                 return null;
             }

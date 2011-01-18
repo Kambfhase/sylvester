@@ -46,17 +46,18 @@ Plane.prototype = {
         if (this.intersects(obj) || this.contains(obj)) {
             return 0;
         }
+        var A,B,N,P;
         if (obj.anchor) {
             // obj is a plane or line
-            var A = this.anchor.elements,
-                B = obj.anchor.elements,
-                N = this.normal.elements;
+            A = this.anchor.elements;
+            B = obj.anchor.elements;
+            N = this.normal.elements;
             return Math.abs((A[0] - B[0]) * N[0] + (A[1] - B[1]) * N[1] + (A[2] - B[2]) * N[2]);
         } else {
             // obj is a point
-            var P = obj.elements || obj;
-            var A = this.anchor.elements,
-                N = this.normal.elements;
+            P = obj.elements || obj;
+            A = this.anchor.elements;
+            N = this.normal.elements;
             return Math.abs((A[0] - P[0]) * N[0] + (A[1] - P[1]) * N[1] + (A[2] - (P[2] || 0)) * N[2]);
         }
     },
@@ -91,11 +92,12 @@ Plane.prototype = {
         if (!this.intersects(obj)) {
             return null;
         }
+        var N,A;
         if (obj.direction) {
             // obj is a line
-            var A = obj.anchor.elements,
-                D = obj.direction.elements,
-                P = this.anchor.elements,
+            var D = obj.direction.elements,
+                P = this.anchor.elements;
+                A = obj.anchor.elements;
                 N = this.normal.elements;
             var multiplier = (N[0] * (P[0] - A[0]) + N[1] * (P[1] - A[1]) + N[2] * (P[2] - A[2])) / (N[0] * D[0] + N[1] * D[1] + N[2] * D[2]);
             return Vector.create([A[0] + D[0] * multiplier, A[1] + D[1] * multiplier, A[2] + D[2] * multiplier]);
@@ -104,9 +106,9 @@ Plane.prototype = {
             var direction = this.normal.cross(obj.normal).toUnitVector();
             // To find an anchor point, we find one co-ordinate that has a value
             // of zero somewhere on the intersection, and remember which one we picked
-            var N = this.normal.elements,
-                A = this.anchor.elements,
-                O = obj.normal.elements,
+                N = this.normal.elements;
+                A = this.anchor.elements;
+            var O = obj.normal.elements,
                 B = obj.anchor.elements;
             var solver = Matrix.Zero(2, 2),
                 i = 0;

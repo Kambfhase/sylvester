@@ -38,20 +38,23 @@ Line.prototype = {
         if (obj.normal || (obj.start && obj.end)) {
             return obj.distanceFrom(this);
         }
+        var A;
         if (obj.direction) {
             // obj is a line
             if (this.isParallelTo(obj)) {
                 return this.distanceFrom(obj.anchor);
             }
             var N = this.direction.cross(obj.direction).toUnitVector().elements;
-            var A = this.anchor.elements,
-                B = obj.anchor.elements;
+            var B = obj.anchor.elements;
+            A = this.anchor.elements;
+                
             return Math.abs((A[0] - B[0]) * N[0] + (A[1] - B[1]) * N[1] + (A[2] - B[2]) * N[2]);
         } else {
             // obj is a point
             var P = obj.elements || obj;
-            var A = this.anchor.elements,
-                D = this.direction.elements;
+            var D = this.direction.elements;
+            A = this.anchor.elements;
+                
             var PA1 = P[0] - A[0],
                 PA2 = P[1] - A[1],
                 PA3 = (P[2] || 0) - A[2];
@@ -158,25 +161,25 @@ Line.prototype = {
                 y = (D1 * E2 - D2 * E1),
                 z = (D2 * E3 - D3 * E2);
             var N = [x * E3 - y * E2, y * E1 - z * E3, z * E2 - x * E1];
-            var P = Plane.create(obj.anchor, N);
+            P = Plane.create(obj.anchor, N);
             return P.intersectionWith(this);
         } else {
             // obj is a point
-            var P = obj.elements || obj;
+            P = obj.elements || obj;
             if (this.contains(P)) {
                 return Vector.create(P);
             }
-            var A = this.anchor.elements,
-                D = this.direction.elements;
-            var D1 = D[0],
-                D2 = D[1],
-                D3 = D[2],
-                A1 = A[0],
+            var A = this.anchor.elements;
+            D = this.direction.elements;
+            D1 = D[0];
+            D2 = D[1];
+            D3 = D[2];
+            var A1 = A[0],
                 A2 = A[1],
                 A3 = A[2];
-            var x = D1 * (P[1] - A2) - D2 * (P[0] - A1),
-                y = D2 * ((P[2] || 0) - A3) - D3 * (P[1] - A2),
-                z = D3 * (P[0] - A1) - D1 * ((P[2] || 0) - A3);
+            x = D1 * (P[1] - A2) - D2 * (P[0] - A1);
+            y = D2 * ((P[2] || 0) - A3) - D3 * (P[1] - A2);
+            z = D3 * (P[0] - A1) - D1 * ((P[2] || 0) - A3);
             var V = Vector.create([D2 * x - D3 * z, D3 * y - D1 * x, D1 * z - D2 * y]);
             var k = this.distanceFrom(P) / V.modulus();
             return Vector.create([
