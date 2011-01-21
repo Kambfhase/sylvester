@@ -60,6 +60,26 @@ Vector.prototype = {
             fn(this.elements[i], i + 1);
         }
     },
+    
+    // ES5 compliant forEach method
+    forEach: Array.prototype.forEach ? function( fn, context){
+        this.elements.forEach( fn, context);
+    }: function( fn, context){
+        var e = this.elements, n = e.length, i=0;
+        for(; i<n; i++){
+            fn.call( context, e[i], i, e);
+        }
+    },
+
+    mapES5: Array.prototype.map ? function( fn, context){
+        return Vector.create(this.elements.map( fn, context));
+    } : function( fn, context){
+        var e = this.elements, n = e.length, i=0, arr=[];
+        for(; i<n; i++){
+            arr[i] = fn.call( context, e[i], i, e);
+        }
+        return Vector.create(arr);
+    },
 
     // Returns a new vector created by normalizing the receiver
     toUnitVector: function () {
